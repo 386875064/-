@@ -1,0 +1,87 @@
+<!-- pages/index/index.wxml -->
+<view class="container" style="padding: 30rpx; background: #f5f5f5; min-height: 100vh;">
+  <!-- 注册入口：仅未注册用户可见 -->
+  <view wx:if="{{!isRegistered}}" class="register-btn-wrap" style="margin-bottom: 40rpx;">
+    <button 
+      style="background: #07c160; color: #fff; font-size: 32rpx; padding: 20rpx 0; border-radius: 10rpx;"
+      bindtap="showRegisterModal"
+    >
+      📝 点击注册
+    </button>
+  </view>
+
+  <!-- 注册弹窗：隐藏状态，点击注册后显示 -->
+  <view wx:if="{{showRegisterModal}}" class="modal-mask" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; display: flex; align-items: center; justify-content: center;">
+    <view style="background: #fff; width: 80%; border-radius: 16rpx; padding: 30rpx;">
+      <view style="font-size: 28rpx; font-weight: bold; margin-bottom: 20rpx; text-align: center;">用户注册</view>
+      
+      <!-- 昵称输入 -->
+      <view style="margin-bottom: 20rpx;">
+        <text style="font-size: 24rpx; color: #333;">昵称：</text>
+        <input 
+          style="border: 1px solid #eee; padding: 10rpx; border-radius: 8rpx; margin-top: 10rpx;"
+          placeholder="请输入你的昵称"
+          bindinput="inputNickname"
+          value="{{nickname}}"
+        />
+      </view>
+
+      <!-- 小组选择（先手动加几个测试） -->
+      <view style="margin-bottom: 20rpx;">
+        <text style="font-size: 24rpx; color: #333;">所属小组：</text>
+        <picker 
+          mode="selector" 
+          range="{{groupList}}" 
+          bindchange="selectGroup"
+          value="{{groupIndex}}"
+          style="margin-top: 10rpx;"
+        >
+          <view style="border: 1px solid #eee; padding: 10rpx; border-radius: 8rpx;">
+            {{groupList[groupIndex] || '请选择小组'}}
+          </view>
+        </picker>
+      </view>
+
+      <!-- 注册按钮 -->
+      <button 
+        style="background: #07c160; color: #fff; margin-top: 20rpx;"
+        bindtap="doRegister"
+        disabled="{{!nickname || groupIndex === -1}}"
+      >
+        确认注册
+      </button>
+
+      <!-- 关闭按钮 -->
+      <button 
+        style="background: #eee; color: #666; margin-top: 10rpx;"
+        bindtap="closeRegisterModal"
+      >
+        取消
+      </button>
+    </view>
+  </view>
+
+  <!-- 原有功能按钮：已注册用户可见 -->
+  <view wx:if="{{isRegistered}}" style="display: flex; flex-direction: column; gap: 20rpx;">
+    <button 
+      style="background: #007aff; color: #fff; font-size: 32rpx; padding: 20rpx 0; border-radius: 10rpx;"
+      bindtap="goToCheckin"
+    >
+      🎤 立即打卡
+    </button>
+    <button 
+      style="background: #ff9500; color: #fff; font-size: 32rpx; padding: 20rpx 0; border-radius: 10rpx;"
+      bindtap="goToOthersCheckin"
+    >
+      📜 查看全部打卡
+    </button>
+
+    <!-- 管理员功能：仅管理员可见 -->
+    <view wx:if="{{isAdmin}}" style="margin-top: 30rpx; border-top: 1px solid #eee; padding-top: 20rpx;">
+      <view style="font-size: 28rpx; font-weight: bold; margin-bottom: 10rpx; color: #333;">管理员功能</view>
+      <button bindtap="goToGroupManager">📋 小组管理</button>
+      <button bindtap="goToStatistics">📊 打卡统计</button>
+      <button bindtap="goToUserManager">👥 用户管理</button>
+    </view>
+  </view>
+</view>
