@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "厦门银行宁德分行读书打卡",
+  "usingComponents": {
+    "cloud-tip-modal": "/components/cloudTipModal/index"
+  }
+}

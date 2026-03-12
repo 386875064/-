@@ -1,0 +1,97 @@
+<view style="padding: 30rpx;background:#f5f5f5;min-height:100vh;">
+  <view style="font-size:36rpx;font-weight:bold;margin-bottom:30rpx;">📚 全部打卡记录</view>
+
+  <view wx:if="{{list.length === 0}}" style="text-align:center;padding:100rpx 0;font-size:28rpx;color:#999;">
+    暂无打卡记录
+  </view>
+
+  <view wx:else>
+    <view wx:for="{{list}}" wx:key="item.id" style="background:#fff;padding:30rpx;border-radius:12rpx;margin-bottom:20rpx;">
+      <!-- 头部：昵称+小组 + 时间 -->
+      <view style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20rpx;">
+        <view>
+          <text style="font-size:32rpx;font-weight:bold;color:#222;">{{item.nickname}}</text>
+          <text style="font-size:24rpx;color:#999;margin-left:15rpx;">{{item.groupName}}</text>
+        </view>
+        <text style="font-size:22rpx;color:#999;">{{item.checkinTime}}</text>
+      </view>
+
+      <!-- 打卡内容 -->
+      <view style="font-size:28rpx;color:#333;line-height:1.6;margin-bottom:25rpx;">
+        {{item.checkinText}}
+      </view>
+
+      <!-- 音频播放区域（含进度条） -->
+      <view wx:if="{{item.audioPath && item.audioPath !== ''}}" style="margin-bottom:25rpx;">
+        <button bindtap="toggleAudio" data-id="{{item.id}}" data-url="{{item.audioPath}}" 
+                style="background:#f0f8ff;color:#007aff;border:none;border-radius:10rpx;padding:14rpx 0;font-size:28rpx;display:flex;align-items:center;justify-content:center;gap:10rpx;width:100%;">
+          <text style="font-size:28rpx;">{{playingAudioId === item.id ? '⏸️' : '▶️'}}</text>
+          <text>{{playingAudioId === item.id ? '暂停播放' : '播放音频'}}（{{item.audioDuration}}秒）</text>
+        </button>
+        
+        <!-- 音频进度条（修复 IDE 误报） -->
+        <view wx:if="{{playingAudioId === item.id}}" style="margin-top:15rpx;">
+          <view style="display:flex;justify-content:space-between;font-size:22rpx;color:#666;margin-bottom:8rpx;">
+            <text>{{audioProgress.currentTime.toFixed(1)}}秒</text>
+            <text>{{item.audioDuration}}秒</text>
+          </view>
+          <view class="progress-bar-bg">
+          <!-- 核心修复：把 % 移入插值内部 -->
+<view class="progress-bar-active" style="width:{{audioProgress.percent + '%'}}"></view>view>
+          </view>
+        </view>
+      </view>
+      <view wx:else style="margin-bottom:25rpx;color:#999;font-size:24rpx;text-align:center;">
+        无有效音频
+      </view>
+
+      <!-- 图片预览（已修复 includes 报错） -->
+      <view wx:if="{{item.imagePaths && item.imagePaths.length > 0}}" style="display:flex;flex-wrap:wrap;gap:12rpx;margin-bottom:25rpx;">
+        <image 
+          wx:for="{{item.imagePaths}}" 
+          wx:for-item="imgItem" 
+          wx:key="*this"
+          src="{{imgItem || ''}}" 
+          style="width:140rpx;height:140rpx;border-radius:10rpx;object-fit:cover;" 
+          bindtap="previewImage" 
+          data-index="{{index}}"
+          data-record-id="{{item.id}}"
+          wx:if="{{imgItem}}"
+        ></image>
+      </view>
+
+      <!-- 点赞区：类名控制样式（消除 IDE 误报） -->
+      <view style="display:flex;align-items:center;gap:15rpx;">
+        <button 
+          bindtap="toggleLike" 
+          data-id="{{item.id}}"
+          class="like-btn {{item.isLiked ? 'like-btn-liked' : 'like-btn-unliked'}}"
+        >
+          <text>{{item.isLiked ? '❤️' : '♡'}}</text>
+          <text>点赞</text>
+        </button>
+        <text bindtap="showLikers" data-id="{{item.id}}" style="font-size:26rpx;color:#666;">
+          ({{item.likes || 0}})
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 点赞人员弹窗 -->
+  <view wx:if="{{showLikerModal}}" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;">
+    <view style="background:#fff;border-radius:12rpx;width:85%;max-height:70%;padding:30rpx;">
+      <view style="font-size:32rpx;font-weight:bold;margin-bottom:20rpx;text-align:center;">👍 点赞人员列表</view>
+      <view wx:if="{{likerList.length === 0}}" style="text-align:center;padding:40rpx 0;color:#999;font-size:26rpx;">
+        暂无点赞人员
+      </view>
+      <view wx:else style="max-height:50vh;overflow-y:auto;">
+        <view wx:for="{{likerList}}" wx:key="index" style="font-size:28rpx;padding:12rpx 0;border-bottom:1px solid #f1f1f1;">
+          {{item}}
+        </view>
+      </view>
+      <button bindtap="closeLikerModal" style="margin-top:25rpx;background:#07c16c;color:#fff;border:none;border-radius:10rpx;padding:12rpx;width:100%;font-size:28rpx;">
+        关闭
+      </button>
+    </view>
+  </view>
+</view>

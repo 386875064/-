@@ -1,0 +1,61 @@
+/* 整体排版优化 */
+view {
+  box-sizing: border-box;
+}
+
+/* 统一按钮样式 */
+button {
+  border-radius: 10rpx;
+  font-size: 28rpx;
+}
+
+/* 播放按钮 */
+.audio-btn {
+  background: #f0f8ff;
+  color: #007aff;
+}
+
+/* 点赞按钮 - 未选中态 */
+.like-btn-unliked {
+  background: #f1f2f6;
+  color: #2f3542;
+  border: none;
+  padding: 12rpx 20rpx;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 点赞按钮 - 选中态 */
+.like-btn-liked {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 12rpx 20rpx;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 音频进度条 - 背景 */
+.progress-bar-bg {
+  width: 100%;
+  height: 8rpx;
+  background: #eee;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+/* 音频进度条 - 激活态 */
+.progress-bar-active {
+  height: 100%;
+  background: #007aff;
+  transition: width 0.1s linear;
+}
+
+/* 弹窗样式 */
+.liker-modal {
+  border-radius: 12rpx;
+}

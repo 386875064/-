@@ -1,0 +1,96 @@
+<view style="padding: 30rpx;background:#f5f5f5;min-height:100vh;">
+  <!-- 标题 -->
+  <view style="font-size:36rpx;font-weight:bold;margin-bottom:30rpx;">📝 打卡提交</view>
+
+  <!-- 昵称输入 -->
+  <view style="background:#fff;border-radius:16rpx;padding:25rpx;margin-bottom:20rpx;">
+    <text style="font-size:26rpx;color:#666;display:block;margin-bottom:10rpx;">✏️ 你的昵称</text>
+    <input 
+      placeholder="请输入昵称（必填）" 
+      bindinput="inputNickname" 
+      value="{{nickname}}" 
+      style="border:1px solid #eee;padding:20rpx;border-radius:8rpx;font-size:26rpx;"
+    />
+  </view>
+
+  <!-- 小组名输入 -->
+  <view style="background:#fff;border-radius:16rpx;padding:25rpx;margin-bottom:20rpx;">
+    <text style="font-size:26rpx;color:#666;display:block;margin-bottom:10rpx;">🏷️ 所属小组</text>
+    <input 
+      placeholder="请输入小组名（必填）" 
+      bindinput="inputGroupName" 
+      value="{{groupName}}" 
+      style="border:1px solid #eee;padding:20rpx;border-radius:8rpx;font-size:26rpx;"
+    />
+  </view>
+
+  <!-- 打卡内容 -->
+  <view style="background:#fff;border-radius:16rpx;padding:25rpx;margin-bottom:20rpx;">
+    <text style="font-size:26rpx;color:#666;display:block;margin-bottom:10rpx;">📖 打卡内容（可选）</text>
+    <input 
+      placeholder="输入今日打卡内容（如：完成项目开发）" 
+      bindinput="inputCheckinText" 
+      value="{{checkinText}}" 
+      style="border:1px solid #eee;padding:20rpx;border-radius:8rpx;font-size:26rpx;"
+    />
+  </view>
+
+  <!-- 录音模块 -->
+  <view style="background:#fff;border-radius:16rpx;padding:25rpx;margin-bottom:20rpx;">
+    <text style="font-size:26rpx;color:#666;display:block;margin-bottom:20rpx;">🎙️ 录音（至少{{minAudioDuration}}秒，最大60秒）</text>
+    <view style="display:flex;gap:20rpx;align-items:center;">
+      <button 
+        bindtap="recordAudio"
+        style="flex:1;background:{{isRecording ? '#f44336' : (isAudioEnough ? '#4CAF50' : '#FF9800')}};color:white;border-radius:8rpx;padding:20rpx;font-size:26rpx;"
+      >
+        {{isRecording ? '🛑 停止录音' : (isAudioEnough ? '✅ 录音完成' : '🎙️ 开始录音')}}
+      </button>
+      <view style="font-size:32rpx;font-weight:bold;color:{{isAudioEnough ? '#4CAF50' : '#f44336'}};">
+        {{recordingTime > 0 ? recordingTime : audioDuration}} 秒
+      </view>
+    </view>
+    <!-- 删除音频按钮 -->
+    <button 
+      wx:if="{{audioPath && !isRecording}}"
+      bindtap="deleteAudio"
+      size="mini"
+      style="margin-top:15rpx;background:#f5f5f5;color:#f44336;font-size:22rpx;"
+    >
+      🗑️ 删除当前音频
+    </button>
+  </view>
+
+  <!-- 图片上传 -->
+  <view style="background:#fff;border-radius:16rpx;padding:25rpx;margin-bottom:30rpx;">
+    <button 
+      bindtap="chooseImage"
+      style="width:100%;background:#2196F3;color:white;border-radius:8rpx;padding:20rpx;font-size:26rpx;margin-bottom:20rpx;"
+    >
+      📷 选择图片（可选，最多9张）
+    </button>
+    <!-- 已选图片预览 -->
+    <view wx:if="{{imagePaths.length > 0}}" style="display:flex;flex-wrap:wrap;gap:15rpx;">
+      <view wx:for="{{imagePaths}}" wx:key="index" style="position:relative;">
+        <image 
+          src="{{item}}" 
+          style="width:120rpx;height:120rpx;border-radius:8rpx;"
+        />
+        <view 
+          bindtap="deleteImage" 
+          data-index="{{index}}"
+          style="position:absolute;top:-10rpx;right:-10rpx;background:#f44336;color:white;width:30rpx;height:30rpx;border-radius:50%;text-align:center;line-height:30rpx;font-size:20rpx;"
+        >×</view>
+      </view>
+    </view>
+    <view wx:else style="text-align:center;padding:10rpx;font-size:22rpx;color:#999;">暂无选择的图片</view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <button 
+    bindtap="submitCheckin" 
+    style="width:100%;padding:25rpx;font-size:28rpx;border-radius:10rpx;background:{{!nickname || !groupName || !isAudioEnough || isRecording ? '#ccc' : '#4CAF50'}};color:white;"
+    disabled="{{!nickname || !groupName || !isAudioEnough || isRecording}}"
+  >
+    📤 提交打卡
+  </button>
+</view>
